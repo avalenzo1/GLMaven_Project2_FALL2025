@@ -34,7 +34,7 @@ public class JavaFXTemplate extends Application {
         Circle circN = new Circle (50, 50, 50);
         Circle circO = new Circle (50, 50, 50);
 
-         circ.setFill(Color.web("#C0C0C0"));
+         circK.setFill(Color.web("#C0C0C0"));
 	     rect.setArcHeight(50);
 	     rect.setArcWidth(50);
 	     rect.setFill(Color.VIOLET);
@@ -57,7 +57,7 @@ public class JavaFXTemplate extends Application {
 
 	     ft.play();
 	     BorderPane root = new BorderPane();
-	     root.setCenter(circ);
+	     root.setCenter(circK);
          root.setStyle("-fx-background-color: #D4AF37;");
 	     
 	     Scene scene = new Scene(root, 700,700);
