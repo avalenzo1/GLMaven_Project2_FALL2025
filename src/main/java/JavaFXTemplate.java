@@ -62,7 +62,7 @@ public class JavaFXTemplate extends Application {
         imgViewPlay.setFitWidth(300);
         imgViewPlay.setPreserveRatio(true);
 
-
+            //test
         //Exit Button
         Image exitPic = new Image("C:\\Users\\ajaj4\\OneDrive\\Desktop\\Junior\\Semester1\\Cs342\\GLMaven_Project2_FALL2025\\src\\main\\resources\\pictures\\exitPicture.png");
         ImageView exitView = new ImageView(exitPic);
