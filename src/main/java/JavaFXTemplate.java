@@ -20,6 +20,12 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
+private Scene primaryStage;
+private Scene menuScene;
+private Scene rulesScene;
+private Scene oddsScene;
+private Scene gameScene;
+
 public class JavaFXTemplate extends Application {
 
 	public static void main(String[] args) {
@@ -31,32 +37,12 @@ public class JavaFXTemplate extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
+        createprimaryStage();
+        createMenuScene();
+        createRulesScene();
+        createOddsScene();
+        createGameScene();
 		primaryStage.setTitle("Start Screen");
-		//test
-		 Rectangle rect = new Rectangle (50, 40, 50, 50);
-
-
-	     rect.setArcHeight(50);
-	     rect.setArcWidth(50);
-	     rect.setFill(Color.VIOLET);
-
-	     RotateTransition rt = new RotateTransition(Duration.millis(5000), rect);
-	     rt.setByAngle(270);
-	     rt.setCycleCount(4);
-	     rt.setAutoReverse(true);
-	     SequentialTransition seqTransition = new SequentialTransition (
-	         new PauseTransition(Duration.millis(500)),
-	         rt
-	     );
-	     seqTransition.play();
-	     
-	     FadeTransition ft = new FadeTransition(Duration.millis(5000), rect);
-	     ft.setFromValue(1.0);
-	     ft.setToValue(0.3);
-	     ft.setCycleCount(4);
-	     ft.setAutoReverse(true);
-
-	     ft.play();
 
          Image imgKenoLogo = new Image(getClass().getResourceAsStream("pictures/keno_logo.png"));
          ImageView imgKenoLogoView = new ImageView(imgKenoLogo);
@@ -120,19 +106,8 @@ public class JavaFXTemplate extends Application {
         GameBegin.setStyle("-fx-background-color: #D4AF37;");
         GameBegin.setTop(exitButtonGameScreen);
 
-        GridPane RulesGridPane = new GridPane();
-        RulesGridPane.setStyle("-fx-background-color: #D4AF37;");
-        RulesGridPane.setAlignment(Pos.TOP_LEFT);
-        RulesGridPane.setHgap(10);
-        RulesGridPane.setVgap(10);
-        RulesGridPane.setMinSize(500, 400);
-        RulesGridPane.add(exitButton, 0, 0);
-        RulesGridPane.add(imgRulesButton, 1, 0);
 
-
-	     
-	     Scene menuScene = new Scene(StartScreen, 500,400);
-         Scene RulesScene = new Scene(RulesGridPane, 500,400);
+         Scene RulesScene = new Scene(StartScreen, 500,400);
          Scene GameStartScene = new Scene(GameBegin, 500,400);
          primaryStage.setScene(menuScene);
 
@@ -147,5 +122,40 @@ public class JavaFXTemplate extends Application {
         });
 
 	}
+
+}
+
+
+
+private void createprimaryStage(){
+
+}
+
+private void createMenuScene(){
+    GridPane RulesGridPane = new GridPane();
+    RulesGridPane.setStyle("-fx-background-color: #D4AF37;");
+    RulesGridPane.setAlignment(Pos.TOP_CENTER);
+    RulesGridPane.setHgap(2);
+    RulesGridPane.setVgap(2);
+
+    RulesGridPane.setPrefSize(500, 400);
+
+    RulesGridPane.add(exitButton, 0, 0);
+    RulesGridPane.add(imgRulesButton, 1, 0);
+    RulesGridPane.add(imgKenoLogoView, 0, 1);
+    RulesGridPane.add(playButton, 0, 2);
+
+
+
+    Scene menuScene = new Scene(RulesGridPane, 500,400);
+}
+
+private void createRulesScene(){
+
+}
+private void createOddsScene(){
+
+}
+private void createGameScene(){
 
 }
