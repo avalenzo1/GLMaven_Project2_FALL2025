@@ -4,9 +4,12 @@ import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -68,36 +71,81 @@ public class JavaFXTemplate extends Application {
         imgViewPlay.setFitWidth(300);
         imgViewPlay.setPreserveRatio(true);
 
-            //test
-        //Exit Button
+
+        //Start MenuExit Button
         Image exitPic = new Image("pictures/exitPicture.png");
         ImageView exitView = new ImageView(exitPic);
         exitView.setFitWidth(50);
         exitView.setFitHeight(50);
+        exitView.setPreserveRatio(true);
         Button exitButton = new Button();
         exitButton.setStyle("-fx-background-color: transparent;");
         exitButton.setGraphic(exitView);
+        exitButton.setOnAction( event -> {
+            primaryStage.close();
+        });
+        //Start Rules Button
+        Image rules = new Image(getClass().getResourceAsStream("pictures/ruleButton.png"));
+        ImageView imgRules = new ImageView(rules);
+        imgRules.setFitWidth(50);
+        imgRules.setFitHeight(50);
+        imgRules.setPreserveRatio(true);
+        Button imgRulesButton = new Button();
+        imgRulesButton.setStyle("-fx-background-color: transparent;");
+        imgRulesButton.setGraphic(imgRules);
+
+
+       //Game Menu Exit Button
+        Button exitButtonGameScreen = new Button();
+        exitButtonGameScreen.setStyle("-fx-background-color: transparent;");
+        exitButtonGameScreen.setGraphic(exitView);
+        exitButtonGameScreen.setOnAction( event -> {
+            primaryStage.close();
+        });
 
         Button playButton = new Button();
         playButton.setStyle("-fx-background-color: transparent");
         playButton.setGraphic(imgViewPlay);
 
+
         center.getChildren().addAll(imgKenoLogoView, playButton);
 
 
-	     BorderPane root = new BorderPane();
-	     root.setCenter(center);
-         root.setTop(exitButton);
-         root.setStyle("-fx-background-color: #D4AF37;");
-	     
-	     Scene scene = new Scene(root, 500,400);
-         primaryStage.setScene(scene);
-         primaryStage.show();
-		
-				
-		//Start Screen
+	     BorderPane StartScreen = new BorderPane();
+         BorderPane GameBegin = new BorderPane();
 
-        Button button = new Button("Click Me");
+	     StartScreen.setCenter(center);
+         StartScreen.setTop(exitButton);
+         StartScreen.setStyle("-fx-background-color: #D4AF37;");
+        GameBegin.setStyle("-fx-background-color: #D4AF37;");
+        GameBegin.setTop(exitButtonGameScreen);
+
+        GridPane RulesGridPane = new GridPane();
+        RulesGridPane.setStyle("-fx-background-color: #D4AF37;");
+        RulesGridPane.setAlignment(Pos.TOP_LEFT);
+        RulesGridPane.setHgap(10);
+        RulesGridPane.setVgap(10);
+        RulesGridPane.setMinSize(500, 400);
+        RulesGridPane.add(exitButton, 0, 0);
+        RulesGridPane.add(imgRulesButton, 1, 0);
+
+
+	     
+	     Scene menuScene = new Scene(StartScreen, 500,400);
+         Scene RulesScene = new Scene(RulesGridPane, 500,400);
+         Scene GameStartScene = new Scene(GameBegin, 500,400);
+         primaryStage.setScene(menuScene);
+
+         primaryStage.show();
+
+
+        playButton.setOnAction( event -> {
+            primaryStage.setScene(GameStartScene);
+        });
+        imgRulesButton.setOnAction( event -> {
+            primaryStage.setScene(RulesScene);
+        });
+
 	}
 
 }
