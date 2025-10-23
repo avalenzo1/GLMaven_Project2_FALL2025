@@ -31,12 +31,8 @@ public class JavaFXTemplate extends Application {
 		primaryStage.setTitle("Start Screen");
 		
 		 Rectangle rect = new Rectangle (50, 40, 50, 50);
-         Circle circK = new Circle (50, 50, 50);
-        Circle circE = new Circle (50, 50, 50);
-        Circle circN = new Circle (50, 50, 50);
-        Circle circO = new Circle (50, 50, 50);
 
-         circK.setFill(Color.web("#C0C0C0"));
+
 	     rect.setArcHeight(50);
 	     rect.setArcWidth(50);
 	     rect.setFill(Color.VIOLET);
@@ -66,6 +62,16 @@ public class JavaFXTemplate extends Application {
         imgViewPlay.setFitWidth(300);
         imgViewPlay.setPreserveRatio(true);
 
+
+        //Exit Button
+        Image exitPic = new Image("C:\\Users\\ajaj4\\OneDrive\\Desktop\\Junior\\Semester1\\Cs342\\GLMaven_Project2_FALL2025\\src\\main\\resources\\pictures\\exitPicture.png");
+        ImageView exitView = new ImageView(exitPic);
+        exitView.setFitWidth(50);
+        exitView.setFitHeight(50);
+        Button exitButton = new Button();
+        exitButton.setStyle("-fx-background-color: transparent;");
+        exitButton.setGraphic(exitView);
+
         Button playButton = new Button();
         playButton.setStyle("-fx-background-color: transparent");
         playButton.setGraphic(imgViewPlay);
@@ -75,6 +81,7 @@ public class JavaFXTemplate extends Application {
 
 	     BorderPane root = new BorderPane();
 	     root.setCenter(center);
+         root.setTop(exitButton);
          root.setStyle("-fx-background-color: #D4AF37;");
 	     
 	     Scene scene = new Scene(root, 500,400);
