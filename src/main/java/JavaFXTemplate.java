@@ -55,6 +55,12 @@ public class JavaFXTemplate extends Application {
 
 	     ft.play();
 
+         Image imgKenoLogo = new Image(getClass().getResourceAsStream("pictures/keno_logo.png"));
+         ImageView imgKenoLogoView = new ImageView(imgKenoLogo);
+        imgKenoLogoView.setFitWidth(200);
+        imgKenoLogoView.setPreserveRatio(true);
+
+
          VBox center = new VBox();
 
         Image imgPlay = new Image(getClass().getResourceAsStream("pictures/play_btn.png"));
@@ -64,7 +70,7 @@ public class JavaFXTemplate extends Application {
 
             //test
         //Exit Button
-        Image exitPic = new Image("C:\\Users\\ajaj4\\OneDrive\\Desktop\\Junior\\Semester1\\Cs342\\GLMaven_Project2_FALL2025\\src\\main\\resources\\pictures\\exitPicture.png");
+        Image exitPic = new Image("pictures/exitPicture.png");
         ImageView exitView = new ImageView(exitPic);
         exitView.setFitWidth(50);
         exitView.setFitHeight(50);
@@ -76,7 +82,7 @@ public class JavaFXTemplate extends Application {
         playButton.setStyle("-fx-background-color: transparent");
         playButton.setGraphic(imgViewPlay);
 
-        center.getChildren().addAll(playButton);
+        center.getChildren().addAll(imgKenoLogoView, playButton);
 
 
 	     BorderPane root = new BorderPane();
