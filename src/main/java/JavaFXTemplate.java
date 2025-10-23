@@ -5,9 +5,11 @@ import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -24,9 +26,15 @@ public class JavaFXTemplate extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
-		primaryStage.setTitle("Welcome to JavaFX");
+		primaryStage.setTitle("Start Screen");
 		
-		 Rectangle rect = new Rectangle (100, 40, 100, 100);
+		 Rectangle rect = new Rectangle (50, 40, 50, 50);
+         Circle circK = new Circle (50, 50, 50);
+        Circle circE = new Circle (50, 50, 50);
+        Circle circN = new Circle (50, 50, 50);
+        Circle circO = new Circle (50, 50, 50);
+
+         circ.setFill(Color.web("#C0C0C0"));
 	     rect.setArcHeight(50);
 	     rect.setArcWidth(50);
 	     rect.setFill(Color.VIOLET);
@@ -49,14 +57,17 @@ public class JavaFXTemplate extends Application {
 
 	     ft.play();
 	     BorderPane root = new BorderPane();
-	     root.setCenter(rect);
+	     root.setCenter(circ);
+         root.setStyle("-fx-background-color: #D4AF37;");
 	     
 	     Scene scene = new Scene(root, 700,700);
-			primaryStage.setScene(scene);
-			primaryStage.show();
+        primaryStage.setScene(scene);
+        primaryStage.show();
 		
 				
-		
+		//Start Screen
+
+        Button button = new Button("Click Me");
 	}
 
 }
