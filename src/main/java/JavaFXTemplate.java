@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -56,13 +58,28 @@ public class JavaFXTemplate extends Application {
 	     ft.setAutoReverse(true);
 
 	     ft.play();
+
+         VBox center = new VBox();
+
+        Image imgPlay = new Image(getClass().getResourceAsStream("pictures/play_btn.png"));
+        ImageView imgViewPlay = new ImageView(imgPlay);
+        imgViewPlay.setFitWidth(300);
+        imgViewPlay.setPreserveRatio(true);
+
+        Button playButton = new Button();
+        playButton.setStyle("-fx-background-color: transparent");
+        playButton.setGraphic(imgViewPlay);
+
+        center.getChildren().addAll(playButton);
+
+
 	     BorderPane root = new BorderPane();
-	     root.setCenter(circK);
+	     root.setCenter(center);
          root.setStyle("-fx-background-color: #D4AF37;");
 	     
-	     Scene scene = new Scene(root, 700,700);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+	     Scene scene = new Scene(root, 500,400);
+         primaryStage.setScene(scene);
+         primaryStage.show();
 		
 				
 		//Start Screen
