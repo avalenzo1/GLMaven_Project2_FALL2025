@@ -29,7 +29,7 @@ public class JavaFXTemplate extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
 		primaryStage.setTitle("Start Screen");
-		
+		//test
 		 Rectangle rect = new Rectangle (50, 40, 50, 50);
 
 
