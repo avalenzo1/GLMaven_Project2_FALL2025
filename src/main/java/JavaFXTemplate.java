@@ -3,10 +3,12 @@ import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -37,104 +39,154 @@ public class JavaFXTemplate extends Application {
 
         // Create all the scenes
         createMenuScene();
-        // createRulesScene(); // Comment these out for now
+        createRulesScene(); // Comment these out for now
         // createOddsScene();
         // createGameScene();
 
         // Set initial scene
-        primaryStage.setScene(menuScene);
+        primaryStage.setScene(rulesScene);
         primaryStage.show();
     }
+    private Button createImageButton(String imagePath, double width, double height) {
 
-    private Button createExitButton() {
+        ImageView imageView = createImageView(imagePath, width, height);
 
-        Image exitPic = new Image(getClass().getResourceAsStream("/pictures/exitPicture.png"));
-        ImageView exitView = new ImageView(exitPic);
-        exitView.setFitWidth(50);
-        exitView.setFitHeight(50);
-        exitView.setPreserveRatio(true);
-        Button exitButton = new Button();
-        exitButton.setStyle("-fx-background-color: transparent;");
-        exitButton.setGraphic(exitView);
-        exitButton.setOnAction(event -> primaryStage.close());
-        return exitButton;
+        Button button = new Button();
+        button.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+        button.setGraphic(imageView);
+
+
+
+        // Enhanced hover effect with animation
+        button.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_ENTERED, e -> {
+            button.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-cursor: hand;");
+        });
+
+        button.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_EXITED, e -> {
+            button.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+        });
+
+        return button;
+    }
+    private ImageView createImageView(String imagePath, double width, double height) {
+        Image image = new Image(getClass().getResourceAsStream(imagePath));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(width);
+        imageView.setFitHeight(height);
+        imageView.setPreserveRatio(true);
+        return imageView;
     }
 
-    private void createMenuScene() {
-        ImageView imgRules = null;
-        ImageView imgKenoLogoView = null;
-        ImageView imgViewPlay = null;
 
 
-        Image rules = new Image(getClass().getResourceAsStream("pictures/ruleButton.png"));
-        imgRules = new ImageView(rules);
-        imgRules.setFitWidth(50);
-        imgRules.setFitHeight(50);
-        imgRules.setPreserveRatio(true);
+     // Creates the exit button
+    private Button createExitButton() {
+        Button button = createImageButton("pictures/exitPicture.png", 50, 50);
+        button.setOnAction(e -> primaryStage.close());
+        return button;
+    }
+
+
+     // Creates the rules button
+    private Button createRulesButton() {
+        Button rulesButton = createImageButton("pictures/ruleButton.png", 50, 50);
+        rulesButton.setOnAction(event -> {
+            // primaryStage.setScene(rulesScene);
+            System.out.println("Rules button clicked - rules scene would load here");
+        });
+        return rulesButton;
+    }
+
+
+     //Creates the odds button
+    private Button createOddsButton() {
+        Button oddsButton = createImageButton("pictures/Dice.png", 50, 50);
+        oddsButton.setOnAction(event -> {
+            // primaryStage.setScene(oddsScene);
+            System.out.println("Odds button clicked - odds scene would load here");
+        });
+        return oddsButton;
+    }
 
 
 
-        Image imgKenoLogo = new Image(getClass().getResourceAsStream("pictures/keno_logo.png"));
-        imgKenoLogoView = new ImageView(imgKenoLogo);
-        imgKenoLogoView.setFitWidth(200);
-        imgKenoLogoView.setPreserveRatio(true);
-
-
-
-        Image imgPlay = new Image(getClass().getResourceAsStream("pictures/play_btn.png"));
-        imgViewPlay = new ImageView(imgPlay);
-        imgViewPlay.setFitWidth(300);
-        imgViewPlay.setPreserveRatio(true);
-
-        Button imgRulesButton = new Button();
-        imgRulesButton.setStyle("-fx-background-color: transparent;");
-
-        imgRulesButton.setGraphic(imgRules);
-
-        GridPane menuScreneGridPane = new GridPane();
-        menuScreneGridPane.setStyle("-fx-background-color: #D4AF37;");
-        menuScreneGridPane.setAlignment(Pos.TOP_LEFT);
-        menuScreneGridPane.setHgap(1);
-        menuScreneGridPane.setVgap(1);
-
-        Button playButton = new Button();
-        playButton.setStyle("-fx-background-color: transparent");
-
-        playButton.setGraphic(imgViewPlay);
-        Button exitButton = createExitButton();
-        menuScreneGridPane.setPrefSize(500, 400);
-
-        // Add components to grid
-        menuScreneGridPane.add(exitButton, 0, 0);
-        menuScreneGridPane.add(imgRulesButton, 1, 0);
-
-        menuScreneGridPane.add(imgKenoLogoView, 0, 1, 2, 1);
-
-        menuScreneGridPane.add(playButton, 0, 2, 2, 1);
-
-        // Center the content
-        GridPane.setHalignment(exitButton, javafx.geometry.HPos.LEFT);
-        GridPane.setHalignment(imgRulesButton, javafx.geometry.HPos.LEFT);
-        GridPane.setHalignment(playButton, javafx.geometry.HPos.CENTER);
-        GridPane.setHalignment(imgKenoLogoView, javafx.geometry.HPos.CENTER);
-
-
+     //Creates the play button
+    private Button createPlayButton() {
+        Button playButton = createImageButton("pictures/play_btn.png", 300, 100);
         playButton.setOnAction(event -> {
             // primaryStage.setScene(gameScene);
             System.out.println("Play button clicked - game scene would load here");
         });
+        return playButton;
+    }
 
-        imgRulesButton.setOnAction(event -> {
-            // primaryStage.setScene(rulesScene);
-            System.out.println("Rules button clicked - rules scene would load here");
-        });
+    private void createMenuScene() {
+        // Create buttons using the new functions
+        Button exitButton = createExitButton();
+        Button rulesButton = createRulesButton();
+        Button oddsButton = createOddsButton();
+        Button playButton = createPlayButton();
 
-        menuScene = new Scene(menuScreneGridPane, 500, 400);
+        // Create logo
+        ImageView logoView = createImageView("pictures/keno_logo.png", 200, 100);
+
+        // Set margins
+        BorderPane.setMargin(exitButton, new Insets(20, 0, 0, 20));
+        BorderPane.setMargin(rulesButton, new Insets(20, 0, 0, 0));
+        BorderPane.setMargin(oddsButton, new Insets(20, 300, 0, 0));
+
+        // Create center content
+        VBox centerContent = new VBox(20);
+        centerContent.setAlignment(Pos.CENTER);
+        centerContent.getChildren().addAll(logoView, playButton);
+
+        // Create top container
+        BorderPane topContainer = new BorderPane();
+        topContainer.setLeft(exitButton);
+        topContainer.setCenter(rulesButton);
+        topContainer.setRight(oddsButton);
+
+        // Create main layout
+        BorderPane menuBorderPane = new BorderPane();
+        menuBorderPane.setStyle("-fx-background-color: #D4AF37;");
+        menuBorderPane.setPrefSize(500, 400);
+        menuBorderPane.setTop(topContainer);
+        menuBorderPane.setCenter(centerContent);
+
+        menuScene = new Scene(menuBorderPane, 500, 400);
     }
 
     // Placeholder methods for other scenes
     private void createRulesScene() {
-        // rulesScene = new Scene(new Label(), 500, 400);
+        // Create buttons using the new functions
+        Button exitButton = createExitButton();
+        Button rulesButton = createRulesButton();
+        Button oddsButton = createOddsButton();
+
+
+
+
+
+        // Set margins
+        BorderPane.setMargin(exitButton, new Insets(20, 0, 0, 20));
+        BorderPane.setMargin(rulesButton, new Insets(20, 0, 0, 0));
+        BorderPane.setMargin(oddsButton, new Insets(20, 300, 0, 0));
+
+
+
+        // Create top container
+        BorderPane topContainer = new BorderPane();
+        topContainer.setLeft(exitButton);
+        topContainer.setCenter(rulesButton);
+        topContainer.setRight(oddsButton);
+
+        // Create main layout
+        BorderPane menuBorderPane = new BorderPane();
+        menuBorderPane.setStyle("-fx-background-color: #D4AF37;");
+        menuBorderPane.setPrefSize(500, 400);
+        menuBorderPane.setTop(topContainer);
+
+        rulesScene = new Scene(menuBorderPane, 500, 400);
     }
 
     private void createOddsScene() {
