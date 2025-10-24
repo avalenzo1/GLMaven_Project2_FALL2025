@@ -7,6 +7,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
@@ -17,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -40,11 +43,11 @@ public class JavaFXTemplate extends Application {
         // Create all the scenes
         createMenuScene();
         createRulesScene(); // Comment these out for now
-        // createOddsScene();
-        // createGameScene();
+         createOddsScene();
+         createGameScene();
 
         // Set initial scene
-        primaryStage.setScene(rulesScene);
+        primaryStage.setScene(menuScene);
         primaryStage.show();
     }
     private Button createImageButton(String imagePath, double width, double height) {
@@ -91,7 +94,7 @@ public class JavaFXTemplate extends Application {
     private Button createRulesButton() {
         Button rulesButton = createImageButton("pictures/ruleButton.png", 50, 50);
         rulesButton.setOnAction(event -> {
-            // primaryStage.setScene(rulesScene);
+             primaryStage.setScene(rulesScene);
             System.out.println("Rules button clicked - rules scene would load here");
         });
         return rulesButton;
@@ -102,7 +105,7 @@ public class JavaFXTemplate extends Application {
     private Button createOddsButton() {
         Button oddsButton = createImageButton("pictures/Dice.png", 50, 50);
         oddsButton.setOnAction(event -> {
-            // primaryStage.setScene(oddsScene);
+            primaryStage.setScene(oddsScene);
             System.out.println("Odds button clicked - odds scene would load here");
         });
         return oddsButton;
@@ -114,7 +117,7 @@ public class JavaFXTemplate extends Application {
     private Button createPlayButton() {
         Button playButton = createImageButton("pictures/play_btn.png", 300, 100);
         playButton.setOnAction(event -> {
-            // primaryStage.setScene(gameScene);
+            primaryStage.setScene(gameScene);
             System.out.println("Play button clicked - game scene would load here");
         });
         return playButton;
@@ -190,10 +193,24 @@ public class JavaFXTemplate extends Application {
     }
 
     private void createOddsScene() {
-        // oddsScene = new Scene(new Label(), 500, 400);
+        BorderPane borderPane = new BorderPane();
+        borderPane.setStyle("-fx-background-color: #D4AF37;");
+
+        ListView listView = new ListView();
+
+        listView.getItems().add("10 spot -> 1 in 9.05");
+        listView.getItems().add("8 spot -> 1 in 9.77");
+        listView.getItems().add("4 spot -> 1 in 3.86");
+        listView.getItems().add("1 spot -> 1 in 4.00");
+
+
+        borderPane.setCenter(listView);
+
+        oddsScene = new Scene(borderPane, 500, 400);
     }
 
     private void createGameScene() {
-        // gameScene = new Scene(new Label(), 500, 400);
+         gameScene = new Scene(new Label(), 500, 400);
+
     }
 }
