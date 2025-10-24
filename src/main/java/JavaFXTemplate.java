@@ -25,6 +25,7 @@ import javafx.util.Duration;
 
 public class JavaFXTemplate extends Application {
 
+    // And was here
     private Stage primaryStage;
     private Scene menuScene;
     private Scene rulesScene;
