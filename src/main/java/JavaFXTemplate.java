@@ -7,15 +7,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -24,6 +22,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JavaFXTemplate extends Application {
 
@@ -228,24 +229,55 @@ public class JavaFXTemplate extends Application {
     }
 
     private void createOddsScene() {
-        BorderPane borderPane = new BorderPane();
-        borderPane.setStyle("-fx-background-color: #D4AF37;");
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setStyle("-fx-background-color: #D4AF37;");
 
-        ListView listView = new ListView();
+        VBox root = new VBox();
 
-        listView.getItems().add("10 spot -> 1 in 9.05");
-        listView.getItems().add("8 spot -> 1 in 9.77");
-        listView.getItems().add("4 spot -> 1 in 3.86");
-        listView.getItems().add("1 spot -> 1 in 4.00");
+        Button backButton = createBackButon(menuScene);
 
+        root.getChildren().addAll(backButton, scrollPane);
 
-        borderPane.setCenter(listView);
+        Text oddsText = new Text();
 
-        oddsScene = new Scene(borderPane, 500, 400);
+        oddsText.setText("Game Odds:\n" +
+                "10 spot -> 1 in 9.05\n" +
+                "8 spot -> 1 in 9.77\n" +
+                "4 spot -> 1 in 3.86\n" +
+                "1 spot -> 1 in 4.00");
+
+        scrollPane.setContent(oddsText);
+
+        oddsScene = new Scene(root, 500, 400);
     }
 
     private void createGameScene() {
-         gameScene = new Scene(new Label(), 500, 400);
+        // I'll style this later!
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setStyle("-fx-background-color: #D4AF37");
+
+        Text pickDrawing = new Text("");
+
+        FlowPane flowPane = new FlowPane();
+
+        flowPane.setAlignment(Pos.CENTER);
+        flowPane.setHgap(10);
+        flowPane.setVgap(10);
+
+        flowPane.setPadding(new Insets(10, 10, 10, 10));
+
+        List<CheckBox> checkBoxList = new ArrayList<>();
+
+
+        for (int i = 0; i < 80; i++) {
+            checkBoxList.add(new CheckBox());
+            flowPane.getChildren().add(checkBoxList.get(i));
+        }
+
+        borderPane.setCenter(flowPane);
+        gameScene = new Scene(borderPane, 500, 400);
+
 
     }
 }
