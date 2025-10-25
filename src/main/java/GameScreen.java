@@ -64,8 +64,12 @@ public class GameScreen {
     void initializeBetCard() {
         numberButtons = new NumberButton[8][10];
 
+        for (int col = 0; col < 8; col++) {
+            for (int row = 0; row < 10; row++) {
+                betCard.add(numberButtons[col][row].getButton(), col, row);
+            }
+        }
 
-        root.getChildren().clear();
 
     }
 
