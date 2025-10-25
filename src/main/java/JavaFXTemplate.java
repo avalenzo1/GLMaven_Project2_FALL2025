@@ -8,6 +8,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
@@ -31,6 +33,7 @@ public class JavaFXTemplate extends Application {
     private Scene rulesScene;
     private Scene oddsScene;
     private Scene gameScene;
+    private Scene prevScene;
 
     public static void main(String[] args) {
         launch(args);
@@ -43,13 +46,14 @@ public class JavaFXTemplate extends Application {
 
         // Create all the scenes
         createMenuScene();
-        createRulesScene(); // Comment these out for now
+         createRulesScene(prevScene); // Comment these out for now
          createOddsScene();
          createGameScene();
 
         // Set initial scene
         primaryStage.setScene(menuScene);
         primaryStage.show();
+        prevScene = menuScene;
     }
     private Button createImageButton(String imagePath, double width, double height) {
 
@@ -95,7 +99,7 @@ public class JavaFXTemplate extends Application {
     private Button createRulesButton() {
         Button rulesButton = createImageButton("pictures/ruleButton.png", 50, 50);
         rulesButton.setOnAction(event -> {
-             primaryStage.setScene(rulesScene);
+            primaryStage.setScene(rulesScene);
             System.out.println("Rules button clicked - rules scene would load here");
         });
         return rulesButton;
@@ -104,6 +108,7 @@ public class JavaFXTemplate extends Application {
 
      //Creates the odds button
     private Button createOddsButton() {
+
         Button oddsButton = createImageButton("pictures/Dice.png", 50, 50);
         oddsButton.setOnAction(event -> {
             primaryStage.setScene(oddsScene);
@@ -119,6 +124,7 @@ public class JavaFXTemplate extends Application {
         Button playButton = createImageButton("pictures/play_btn.png", 300, 100);
         playButton.setOnAction(event -> {
             primaryStage.setScene(gameScene);
+            prevScene = gameScene;
             System.out.println("Play button clicked - game scene would load here");
         });
         return playButton;
@@ -160,37 +166,65 @@ public class JavaFXTemplate extends Application {
         menuScene = new Scene(menuBorderPane, 500, 400);
     }
 
-    // Placeholder methods for other scenes
-    private void createRulesScene() {
-        // Create buttons using the new functions
-        Button exitButton = createExitButton();
-        Button rulesButton = createRulesButton();
-        Button oddsButton = createOddsButton();
+    private Button createBackButon(Scene scene) {
+        Button playButton = createImageButton("pictures/backButton.png", 50, 50);
+        playButton.setOnAction(event -> {
+            primaryStage.setScene(scene);
+            System.out.println("Back button Clicked");
+        });
+        return playButton;
+    }
+
+    private void createRulesScene(Scene prevScene) {
+        Button backButton = createBackButon(menuScene);
+        backButton.setAlignment(Pos.CENTER);
 
 
+        // Create title
+        Label title = new Label("Keno Rules");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #8B0000;");
 
+        // Create formatted rules text
+        Text rulesText = new Text();
+        rulesText.setText(
+                " WHAT IS KENO?\n" +
+                        "Keno is a lottery-style gambling game where players select numbers and win based on how many match randomly drawn numbers.\n\n" +
 
+                        " BETTING\n" +
+                        "• Bet Card: Grid of numbers 1-80\n" +
+                        "• Number of Spots: Choose 1, 4, 8, or 10 numbers\n" +
+                        "• Drawings: Play for 1-4 consecutive drawings\n\n" +
 
-        // Set margins
-        BorderPane.setMargin(exitButton, new Insets(20, 0, 0, 20));
-        BorderPane.setMargin(rulesButton, new Insets(20, 0, 0, 0));
-        BorderPane.setMargin(oddsButton, new Insets(20, 300, 0, 0));
+                        " GAME FLOW\n" +
+                        "1. Select number of spots\n" +
+                        "2. Choose numbers manually or use Quick Pick\n" +
+                        "3. Select number of drawings (1-4)\n" +
+                        "4. Watch the drawings\n" +
+                        "5. Collect winnings and play again!\n\n" +
 
+                        " DRAWING MECHANICS\n" +
+                        "• 20 numbers drawn from 1-80\n" +
+                        "• No duplicates in single drawing\n" +
+                        "• Sequential display with pauses\n" +
+                        "• Instant win calculation after each drawing"
+        );
+        rulesText.setStyle("-fx-font-size: 14px; -fx-line-spacing: 8px; -fx-fill: #2F4F4F;");
+        rulesText.setWrappingWidth(500);
 
+        // Create scroll pane
+        ScrollPane scrollPane = new ScrollPane(rulesText);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: rgba(255,255,255,0.8);");
+        scrollPane.setPadding(new Insets(20));
 
-        // Create top container
-        BorderPane topContainer = new BorderPane();
-        topContainer.setLeft(exitButton);
-        topContainer.setCenter(rulesButton);
-        topContainer.setRight(oddsButton);
+        // Main layout
+        VBox mainLayout = new VBox(20);
+        mainLayout.setAlignment(Pos.TOP_CENTER);
+        mainLayout.setPadding(new Insets(20));
+        mainLayout.setStyle("-fx-background-color: linear-gradient(to bottom, #FFD700, #DAA520);");
+        mainLayout.getChildren().addAll(title, scrollPane, backButton);
 
-        // Create main layout
-        BorderPane menuBorderPane = new BorderPane();
-        menuBorderPane.setStyle("-fx-background-color: #D4AF37;");
-        menuBorderPane.setPrefSize(500, 400);
-        menuBorderPane.setTop(topContainer);
-
-        rulesScene = new Scene(menuBorderPane, 500, 400);
+        rulesScene = new Scene(mainLayout, 600, 500);
     }
 
     private void createOddsScene() {
