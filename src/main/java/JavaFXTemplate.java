@@ -6,12 +6,8 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
@@ -24,7 +20,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class JavaFXTemplate extends Application {
 
@@ -254,30 +252,10 @@ public class JavaFXTemplate extends Application {
     private void createGameScene() {
         // I'll style this later!
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setStyle("-fx-background-color: #D4AF37");
 
-        Text pickDrawing = new Text("");
+        GameScreen gameScreen = new GameScreen();
+        gameScreen.startDrawings();
 
-        FlowPane flowPane = new FlowPane();
-
-        flowPane.setAlignment(Pos.CENTER);
-        flowPane.setHgap(10);
-        flowPane.setVgap(10);
-
-        flowPane.setPadding(new Insets(10, 10, 10, 10));
-
-        List<CheckBox> checkBoxList = new ArrayList<>();
-
-
-        for (int i = 0; i < 80; i++) {
-            checkBoxList.add(new CheckBox());
-            flowPane.getChildren().add(checkBoxList.get(i));
-        }
-
-        borderPane.setCenter(flowPane);
-        gameScene = new Scene(borderPane, 500, 400);
-
-
+        gameScene = gameScreen.createGameScene();
     }
 }
