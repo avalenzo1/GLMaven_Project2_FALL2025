@@ -4,14 +4,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 
-import javax.swing.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class GameScreen {
@@ -20,11 +18,14 @@ public class GameScreen {
     MenuBar menuBar;
     HBox controlPanel;
     GridPane betCard;
-    VBox spotsSelection;
-    VBox drawingsSelection;
-    VBox resultsDisplay;
+    VBox spotsSelectionLayout;
+    VBox drawingsSelectionLayout;
+    VBox gameLayout;
     NumberButton[][] numberButtons;
+    Button submitButton;
     Set<Integer> selectedNumbers;
+
+    static boolean isInverted = false;
 
     int numDrawings;
     int numSpots;
@@ -37,38 +38,46 @@ public class GameScreen {
         root.setMinHeight(400);
         root.setStyle("-fx-background-color: #D4AF37;");
 
-        controlPanel = new HBox();
-        controlPanel.setAlignment(Pos.CENTER);
-        selectedNumbers = new HashSet<>();
+        scene = new Scene(root, 500, 400);
 
-        resultsDisplay = new VBox();
+        setupMenuComponent();
+        setupDrawingsSelectionLayout();
+        setupSpotsSelectionLayout();
+        setupGameLayout();
 
-        setupMenu();
-        setupDrawingsSelection();
-        setupSpotsSelection();
-
-        root.getChildren().add(drawingsSelection);
+        setLayout(drawingsSelectionLayout);
     }
+
+
 
     Scene createGameScene() {
-        return new Scene(root, 500, 400);
+        return scene;
     }
 
-    void setupMenu() {
+    void setLayout(Pane layout) {
+        root.getChildren().clear();
+        root.getChildren().add(menuBar);
+        root.getChildren().add(layout);
+    }
+
+    void setupMenuComponent() {
         menuBar = new MenuBar();
 
         Menu menu = new Menu("Menu");
 
-        MenuItem quitGame = new MenuItem("Quit");
-        MenuItem newGame = new MenuItem("New Game");
         MenuItem invertColors = new MenuItem("Invert Colors");
 
-        menu.getItems().addAll(quitGame, newGame, invertColors);
+        invertColors.setOnAction(e -> {
+            invertColors();
+        });
+
+        menu.getItems().addAll(invertColors);
         root.setAlignment(Pos.BASELINE_CENTER);
         menuBar.getMenus().addAll(menu);
     }
 
     void initializeBetCard() {
+        selectedNumbers = new HashSet<>();
         gameLogic = new GameLogic(numDrawings, numSpots);
         numberButtons = new NumberButton[8][10];
         betCard = new GridPane();
@@ -77,6 +86,8 @@ public class GameScreen {
         betCard.setVgap(5);
 
         Button autoPickButton = new Button("Auto Pick");
+        submitButton = new Button("Submit");
+        submitButton.setDisable(true);
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 8; col++) {
@@ -85,11 +96,8 @@ public class GameScreen {
                 NumberButton numberButton = new NumberButton(number);
                 Button button = numberButton.getButton();
 
-                int finalCol = col;
-                int finalRow = row;
-
                 button.setOnAction(event -> {
-                    handleNumberSelection(number, finalCol, finalRow);
+                    handleNumberSelection(number);
                 });
 
                 betCard.add(button, col, row);
@@ -97,18 +105,31 @@ public class GameScreen {
             }
         }
 
+        submitButton.setOnAction(event -> {
+            // game round finished
+            if (gameLogic.isGameComplete()) {
+                performDrawing();
+            }
+        });
+
         autoPickButton.setOnAction(event -> {
             autoPickNumbers();
         });
 
-        controlPanel.getChildren().addAll(autoPickButton, betCard);
+        controlPanel.getChildren().addAll(betCard, autoPickButton, submitButton);
     }
 
-    void setupSpotsSelection() {
-        spotsSelection = new VBox();
-        spotsSelection.setAlignment(Pos.CENTER);
-        spotsSelection.setPadding(new Insets(5));
-        spotsSelection.setSpacing(5);
+    void clearAllNumbers() {
+        while (!selectedNumbers.isEmpty()) {
+            handleNumberSelection(selectedNumbers.iterator().next());
+        }
+    }
+
+    void setupSpotsSelectionLayout() {
+        spotsSelectionLayout = new VBox();
+        spotsSelectionLayout.setAlignment(Pos.CENTER);
+        spotsSelectionLayout.setPadding(new Insets(5));
+        spotsSelectionLayout.setSpacing(5);
 
         Text spotsText = new Text("How Many Spots Do You Want To Play?");
 
@@ -126,22 +147,20 @@ public class GameScreen {
             spotButton.setOnAction(e -> {
                 numSpots = spot;
                 initializeBetCard();
-                root.getChildren().clear();
-                root.getChildren().add(menuBar);
-                root.getChildren().add(controlPanel);
+                setLayout(gameLayout);
             });
 
             hBox.getChildren().add(spotButton);
         }
 
-        spotsSelection.getChildren().addAll(spotsText, hBox);
+        spotsSelectionLayout.getChildren().addAll(spotsText, hBox);
     }
 
-    void setupDrawingsSelection() {
-        drawingsSelection = new VBox();
-        drawingsSelection.setAlignment(Pos.CENTER);
-        drawingsSelection.setPadding(new Insets(5));
-        drawingsSelection.setSpacing(5);
+    void setupDrawingsSelectionLayout() {
+        drawingsSelectionLayout = new VBox();
+        drawingsSelectionLayout.setAlignment(Pos.CENTER);
+        drawingsSelectionLayout.setPadding(new Insets(5));
+        drawingsSelectionLayout.setSpacing(5);
 
         Text drawingsText = new Text("How Many Drawings Do You Want To Pick?");
 
@@ -156,56 +175,72 @@ public class GameScreen {
             drawingBtn.setText(String.valueOf(drawing));
             drawingBtn.setOnAction(e -> {
                 numDrawings = drawing;
-                root.getChildren().clear();
-                root.getChildren().add(spotsSelection);
+                setLayout(spotsSelectionLayout);
             });
 
             hBox.getChildren().add(drawingBtn);
         }
 
-        drawingsSelection.getChildren().addAll(drawingsText, hBox);
+        drawingsSelectionLayout.getChildren().addAll(drawingsText, hBox);
 
     }
 
-    void handleNumberSelection(int number, int col, int row) {
-        NumberButton numberButton = numberButtons[col][row];
+    void setupGameLayout() {
+        gameLayout = new VBox();
+        controlPanel = new HBox();
+        controlPanel.setAlignment(Pos.TOP_CENTER);
+        controlPanel.setSpacing(20);
+        controlPanel.setPadding(new Insets(10));
 
-        if (gameLogic.validateSelection(number)) {
-            selectedNumbers.add(number);
-            numberButton.setSelected(true);
+        gameLayout.setAlignment(Pos.CENTER);
+        gameLayout.getChildren().addAll(controlPanel);
+    }
+
+    void handleNumberSelection(int number) {
+        Pair<Integer, Integer> cell = getPosition(number);
+
+        NumberButton numberButton = numberButtons[cell.getKey()][cell.getValue()];
+
+        if (!numberButton.isSelected()) {
+            if (gameLogic.validateSelection(number)) {
+                selectedNumbers.add(number);
+                numberButton.setSelected(true);
+            }
+        } else {
+            if (gameLogic.validateDeselection(number)) {
+                selectedNumbers.remove(number);
+                numberButton.setSelected(false);
+            }
         }
 
-        // game round finished
         if (gameLogic.isGameComplete()) {
-            performDrawing();
+            submitButton.setDisable(false);
         }
     }
 
     void autoPickNumbers() {
+        clearAllNumbers();
+
         Set<Integer> randomNumbers = gameLogic.generateRandomNumbers(numSpots);
 
         System.out.println("Random Numbers: " + randomNumbers);
 
         for (int randomNumber : randomNumbers) {
-            Pair<Integer, Integer> pos = getPosition(randomNumber);
-
-            handleNumberSelection(randomNumber, pos.getKey(), pos.getValue());
+            handleNumberSelection(randomNumber);
         }
-    }
-
-    Pair<Integer, Integer> getPosition(int number) {
-
-
-        Integer col = (number - 1) % 8;
-        Integer row = (number - 1) / 8;
-
-        return new Pair<>(col, row);
     }
 
     void performDrawing() {
         Set<Integer> drawing = gameLogic.performDrawing();
 
         int matches = gameLogic.calculateMatches(drawing);
+
+        for (Integer number : drawing) {
+            Pair<Integer, Integer> cell = getPosition(number);
+            NumberButton numberButton = numberButtons[cell.getKey()][cell.getValue()];
+
+            numberButton.setHighlighted(true);
+        }
 
         showDrawingResults(drawing, matches, 0.0);
     }
@@ -216,6 +251,8 @@ public class GameScreen {
         alert.setHeaderText("Results for drawing #" + gameLogic.currentDrawing);
         alert.setContentText("The winning numbers are: " + drawnNumbers.toString() + "\n" + "You succesfully matched " + matches + " numbers.\n" + "You won " + winAmount + " points.");
 
+        alert.setX(100);
+        alert.setY(100);
         alert.showAndWait();
 
         resetGame();
@@ -233,12 +270,27 @@ public class GameScreen {
 
         if (gameLogic.isGameComplete()) {
             root.getChildren().clear();
+            root.setAlignment(Pos.CENTER);
             root.getChildren().add(new Text("Thank you for playing!"));
         }
 
+        submitButton.setDisable(true);
     }
 
     void invertColors() {
-        root.setStyle("-fx-background-color: #2B50C8;");
+        isInverted = !isInverted;
+
+        if (isInverted) {
+            root.setStyle("-fx-background-color: #2B50C8;");
+        } else {
+            root.setStyle("-fx-background-color: #D4AF37;");
+        }
+    }
+
+    Pair<Integer, Integer> getPosition(int number) {
+        Integer col = (number - 1) % 8;
+        Integer row = (number - 1) / 8;
+
+        return new Pair<>(col, row);
     }
 }

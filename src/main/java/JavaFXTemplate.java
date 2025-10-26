@@ -45,9 +45,9 @@ public class JavaFXTemplate extends Application {
 
         // Create all the scenes
         createMenuScene();
-         createRulesScene(prevScene); // Comment these out for now
-         createOddsScene();
-         createGameScene();
+        createRulesScene(prevScene); // Comment these out for now
+        createOddsScene();
+        createGameScene();
 
 
 
@@ -173,6 +173,7 @@ public class JavaFXTemplate extends Application {
             primaryStage.setScene(scene);
             System.out.println("Back button Clicked");
         });
+
         return playButton;
     }
 
@@ -229,14 +230,11 @@ public class JavaFXTemplate extends Application {
     }
 
     private void createOddsScene() {
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setStyle("-fx-background-color: #D4AF37;");
-
-        VBox root = new VBox();
-
         Button backButton = createBackButon(menuScene);
+        backButton.setAlignment(Pos.CENTER);
 
-        root.getChildren().addAll(backButton, scrollPane);
+        Label title = new Label("Keno Odds");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #8B0000;");
 
         Text oddsText = new Text();
 
@@ -245,10 +243,23 @@ public class JavaFXTemplate extends Application {
                 "8 spot -> 1 in 9.77\n" +
                 "4 spot -> 1 in 3.86\n" +
                 "1 spot -> 1 in 4.00");
+        oddsText.setStyle("-fx-font-size: 14px; -fx-line-spacing: 8px; -fx-fill: #2F4F4F;");
+        oddsText.setWrappingWidth(500);
+
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setStyle("-fx-background-color: #D4AF37;");
 
         scrollPane.setContent(oddsText);
 
-        oddsScene = new Scene(root, 500, 400);
+        VBox mainLayout = new VBox(20);
+        mainLayout.setAlignment(Pos.TOP_CENTER);
+        mainLayout.setPadding(new Insets(20));
+        mainLayout.setStyle("-fx-background-color: linear-gradient(to bottom, #FFD700, #DAA520);");
+        mainLayout.getChildren().addAll(title, scrollPane, backButton);
+
+
+        oddsScene = new Scene(mainLayout, 600, 500);
     }
 
     private void createGameScene() {
@@ -258,5 +269,7 @@ public class JavaFXTemplate extends Application {
         GameScreen gameScreen = new GameScreen();
 
         gameScene = gameScreen.createGameScene();
+
+
     }
 }

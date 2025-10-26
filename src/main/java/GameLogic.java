@@ -15,6 +15,16 @@ public class GameLogic {
         currentDrawing = 0;
     }
 
+    boolean validateDeselection(int number) {
+        if (!selectedNumbers.contains(number)) {
+            System.out.println("This is not a valid selection");
+            return false;
+        }
+
+        selectedNumbers.remove(number);
+        return true;
+    }
+
     boolean validateSelection(int number) {
         if (!canSelectMoreNumbers()) {
             System.out.println("You can't select more numbers!");
@@ -26,10 +36,9 @@ public class GameLogic {
             return false;
         }
 
-        selectedNumbers.add(number);
-
         System.out.println("Selected number: " + number);
 
+        selectedNumbers.add(number);
         return true;
     }
 
@@ -71,7 +80,6 @@ public class GameLogic {
     }
 
     boolean canSelectMoreNumbers() {
-        System.out.println("You can't select more numbers!");
         return selectedNumbers.size() < spotsCount;
     }
 
