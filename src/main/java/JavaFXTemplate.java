@@ -49,6 +49,8 @@ public class JavaFXTemplate extends Application {
          createOddsScene();
          createGameScene();
 
+
+
         // Set initial scene
         primaryStage.setScene(menuScene);
         primaryStage.show();
@@ -254,7 +256,6 @@ public class JavaFXTemplate extends Application {
 
 
         GameScreen gameScreen = new GameScreen();
-        gameScreen.startDrawings();
 
         gameScene = gameScreen.createGameScene();
     }

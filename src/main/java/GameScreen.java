@@ -1,15 +1,14 @@
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,15 +31,15 @@ public class GameScreen {
     int currentDrawing;
     GameLogic gameLogic;
 
-
     GameScreen() {
         root = new VBox();
+        root.setAlignment(Pos.CENTER);
+        root.setMinHeight(400);
         root.setStyle("-fx-background-color: #D4AF37;");
 
         controlPanel = new HBox();
         controlPanel.setAlignment(Pos.CENTER);
         selectedNumbers = new HashSet<>();
-        gameLogic = new GameLogic();
 
         resultsDisplay = new VBox();
 
@@ -58,15 +57,26 @@ public class GameScreen {
     void setupMenu() {
         menuBar = new MenuBar();
 
+        Menu menu = new Menu("Menu");
+
+        MenuItem quitGame = new MenuItem("Quit");
+        MenuItem newGame = new MenuItem("New Game");
+        MenuItem invertColors = new MenuItem("Invert Colors");
+
+        menu.getItems().addAll(quitGame, newGame, invertColors);
+        root.setAlignment(Pos.BASELINE_CENTER);
+        menuBar.getMenus().addAll(menu);
     }
 
     void initializeBetCard() {
+        gameLogic = new GameLogic(numDrawings, numSpots);
         numberButtons = new NumberButton[8][10];
         betCard = new GridPane();
         betCard.setAlignment(Pos.CENTER);
         betCard.setHgap(5);
         betCard.setVgap(5);
 
+        Button autoPickButton = new Button("Auto Pick");
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 8; col++) {
@@ -75,27 +85,23 @@ public class GameScreen {
                 NumberButton numberButton = new NumberButton(number);
                 Button button = numberButton.getButton();
 
-                button.setOnAction(event -> {
-                    if (selectedNumbers.contains(number)) {
-                        numberButton.setSelected(false);
-                        selectedNumbers.remove(number);
-                    } else {
-                        if (selectedNumbers.size() < numSpots) {
-                            numberButton.setSelected(true);
-                            selectedNumbers.add(number);
-                        }
-                    }
+                int finalCol = col;
+                int finalRow = row;
 
+                button.setOnAction(event -> {
+                    handleNumberSelection(number, finalCol, finalRow);
                 });
 
                 betCard.add(button, col, row);
                 numberButtons[col][row] = numberButton;
-
             }
-
         }
 
+        autoPickButton.setOnAction(event -> {
+            autoPickNumbers();
+        });
 
+        controlPanel.getChildren().addAll(autoPickButton, betCard);
     }
 
     void setupSpotsSelection() {
@@ -121,7 +127,8 @@ public class GameScreen {
                 numSpots = spot;
                 initializeBetCard();
                 root.getChildren().clear();
-                root.getChildren().add(betCard);
+                root.getChildren().add(menuBar);
+                root.getChildren().add(controlPanel);
             });
 
             hBox.getChildren().add(spotButton);
@@ -160,37 +167,78 @@ public class GameScreen {
 
     }
 
-    void handleNumberSelection(int number) {
+    void handleNumberSelection(int number, int col, int row) {
+        NumberButton numberButton = numberButtons[col][row];
 
+        if (gameLogic.validateSelection(number)) {
+            selectedNumbers.add(number);
+            numberButton.setSelected(true);
+        }
+
+        // game round finished
+        if (gameLogic.isGameComplete()) {
+            performDrawing();
+        }
     }
 
     void autoPickNumbers() {
+        Set<Integer> randomNumbers = gameLogic.generateRandomNumbers(numSpots);
 
+        System.out.println("Random Numbers: " + randomNumbers);
+
+        for (int randomNumber : randomNumbers) {
+            Pair<Integer, Integer> pos = getPosition(randomNumber);
+
+            handleNumberSelection(randomNumber, pos.getKey(), pos.getValue());
+        }
     }
 
-    void startDrawings() {
+    Pair<Integer, Integer> getPosition(int number) {
 
 
+        Integer col = (number - 1) % 8;
+        Integer row = (number - 1) / 8;
+
+        return new Pair<>(col, row);
     }
 
-    void performSingleDrawing() {
+    void performDrawing() {
+        Set<Integer> drawing = gameLogic.performDrawing();
 
+        int matches = gameLogic.calculateMatches(drawing);
+
+        showDrawingResults(drawing, matches, 0.0);
     }
 
     void showDrawingResults(Set<Integer> drawnNumbers, int matches, double winAmount) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Results");
+        alert.setHeaderText("Results for drawing #" + gameLogic.currentDrawing);
+        alert.setContentText("The winning numbers are: " + drawnNumbers.toString() + "\n" + "You succesfully matched " + matches + " numbers.\n" + "You won " + winAmount + " points.");
 
+        alert.showAndWait();
+
+        resetGame();
     }
 
     void resetGame() {
+        gameLogic.resetGameState();
+
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 8; col++) {
+                NumberButton numberButton = numberButtons[col][row];
+                numberButton.setSelected(false);
+            }
+        }
+
+        if (gameLogic.isGameComplete()) {
+            root.getChildren().clear();
+            root.getChildren().add(new Text("Thank you for playing!"));
+        }
 
     }
 
     void invertColors() {
-
+        root.setStyle("-fx-background-color: #2B50C8;");
     }
-
-    void updateUIState() {
-
-    }
-
 }

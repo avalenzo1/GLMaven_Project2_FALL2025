@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class GameLogic {
     Set<Integer> selectedNumbers;
@@ -8,38 +7,72 @@ public class GameLogic {
     int currentDrawing;
     List<Set<Integer>> allDrawings;
 
-    boolean validateSelection(int number) {
+    GameLogic(int numDrawings, int numSpots) {
+        selectedNumbers = new HashSet<>();
+        allDrawings = new ArrayList<>();
+        spotsCount = numSpots;
+        drawingsCount = numDrawings;
+        currentDrawing = 0;
+    }
 
-        return false;
+    boolean validateSelection(int number) {
+        if (!canSelectMoreNumbers()) {
+            System.out.println("You can't select more numbers!");
+            return false;
+        }
+
+        if (selectedNumbers.contains(number)) {
+            System.out.println("You already selected this number!");
+            return false;
+        }
+
+        selectedNumbers.add(number);
+
+        System.out.println("Selected number: " + number);
+
+        return true;
     }
 
     Set<Integer> generateRandomNumbers(int count) {
+        Set<Integer> randomNumbers = new HashSet<>();
+        Random r = new Random();
 
-        return Set.of();
+        while (randomNumbers.size() < count) {
+            int number = r.nextInt(80) + 1;
+
+            randomNumbers.add(number);
+        }
+
+        return randomNumbers;
     }
 
     Set<Integer> performDrawing() {
+        Set<Integer> drawing = generateRandomNumbers(20);
 
-        return Set.of();
+        allDrawings.add(drawing);
+
+        return drawing;
     }
 
     int calculateMatches(Set<Integer> drawnNumbers) {
+        Set<Integer> matchingNumbers = new HashSet<>(drawnNumbers);
+        matchingNumbers.retainAll(selectedNumbers);
 
-        return 0;
+        return matchingNumbers.size();
     }
 
     void resetGameState() {
-
+        selectedNumbers.clear();
+        currentDrawing++;
     }
 
     boolean isGameComplete() {
-
-        return false;
+        return selectedNumbers.size() >= spotsCount || currentDrawing >= drawingsCount;
     }
 
     boolean canSelectMoreNumbers() {
-
-        return false;
+        System.out.println("You can't select more numbers!");
+        return selectedNumbers.size() < spotsCount;
     }
 
 
