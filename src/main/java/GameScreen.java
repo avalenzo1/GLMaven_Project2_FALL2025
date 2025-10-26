@@ -39,7 +39,6 @@ public class GameScreen {
 
         controlPanel = new HBox();
         controlPanel.setAlignment(Pos.CENTER);
-        betCard = new GridPane();
         selectedNumbers = new HashSet<>();
         gameLogic = new GameLogic();
 
@@ -53,7 +52,7 @@ public class GameScreen {
     }
 
     Scene createGameScene() {
-        return new Scene(root,500, 400);
+        return new Scene(root, 500, 400);
     }
 
     void setupMenu() {
@@ -63,11 +62,37 @@ public class GameScreen {
 
     void initializeBetCard() {
         numberButtons = new NumberButton[8][10];
+        betCard = new GridPane();
+        betCard.setAlignment(Pos.CENTER);
+        betCard.setHgap(5);
+        betCard.setVgap(5);
 
-        for (int col = 0; col < 8; col++) {
-            for (int row = 0; row < 10; row++) {
-                betCard.add(numberButtons[col][row].getButton(), col, row);
+
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 8; col++) {
+                int number = row * 8 + col + 1;
+
+                NumberButton numberButton = new NumberButton(number);
+                Button button = numberButton.getButton();
+
+                button.setOnAction(event -> {
+                    if (selectedNumbers.contains(number)) {
+                        numberButton.setSelected(false);
+                        selectedNumbers.remove(number);
+                    } else {
+                        if (selectedNumbers.size() < numSpots) {
+                            numberButton.setSelected(true);
+                            selectedNumbers.add(number);
+                        }
+                    }
+
+                });
+
+                betCard.add(button, col, row);
+                numberButtons[col][row] = numberButton;
+
             }
+
         }
 
 
@@ -85,7 +110,7 @@ public class GameScreen {
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(5);
 
-        int[] spots = { 1, 4, 8, 10 };
+        int[] spots = {1, 4, 8, 10};
 
         for (int i = 0; i < 4; i++) {
             int spot = spots[i];
@@ -95,6 +120,8 @@ public class GameScreen {
             spotButton.setOnAction(e -> {
                 numSpots = spot;
                 initializeBetCard();
+                root.getChildren().clear();
+                root.getChildren().add(betCard);
             });
 
             hBox.getChildren().add(spotButton);
