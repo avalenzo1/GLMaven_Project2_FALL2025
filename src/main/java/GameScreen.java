@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class GameScreen {
+    JavaFXTemplate app;
     Scene scene;
     VBox root;
     MenuBar menuBar;
@@ -52,7 +53,7 @@ public class GameScreen {
     GameLogic gameLogic;
 
 
-    GameScreen() {
+    GameScreen(JavaFXTemplate app) {
         root = new VBox();
         root.setAlignment(Pos.CENTER);
         root.setMinHeight(400);
@@ -67,6 +68,8 @@ public class GameScreen {
         setupGameOverLayout();
 
         setLayout(drawingsSelectionLayout);
+
+        this.app = app;
     }
 
 
@@ -339,11 +342,21 @@ public class GameScreen {
         Button startOverButton = new Button("New Game");
         Button quitGameButton = new Button("Quit");
 
+        startOverButton.setOnAction(event -> {
+            app.startGame();
+        });
+
+        quitGameButton.setOnAction(event -> {
+            app.close();
+        });
+
         HBox buttonContainer = new HBox();
         buttonContainer.getChildren().addAll(startOverButton, quitGameButton);
         buttonContainer.setAlignment(Pos.CENTER);
         buttonContainer.setSpacing(20);
         buttonContainer.setPadding(new Insets(20));
+
+
 
         gameOverLayout = new VBox();
         gameOverLayout.getChildren().addAll(thankYouText, buttonContainer);

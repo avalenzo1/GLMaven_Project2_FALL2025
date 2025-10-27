@@ -1,28 +1,14 @@
-import javafx.animation.FadeTransition;
-import javafx.animation.PauseTransition;
-import javafx.animation.RotateTransition;
-import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class JavaFXTemplate extends Application {
 
@@ -266,10 +252,19 @@ public class JavaFXTemplate extends Application {
         // I'll style this later!
 
 
-        GameScreen gameScreen = new GameScreen();
+        GameScreen gameScreen = new GameScreen(this);
 
         gameScene = gameScreen.createGameScene();
 
 
+    }
+
+    public void startGame() {
+        createGameScene();
+        primaryStage.setScene(gameScene);
+    }
+
+    public void close() {
+        primaryStage.close();
     }
 }
