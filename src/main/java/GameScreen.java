@@ -90,12 +90,20 @@ public class GameScreen {
         Menu menu = new Menu("Menu");
 
         MenuItem invertColors = new MenuItem("Invert Colors");
+        MenuItem back = new MenuItem("Back");
+        MenuItem rules = new MenuItem("Rules");
+        MenuItem odds = new  MenuItem("Odds");
 
         invertColors.setOnAction(e -> {
             invertColors();
         });
 
+
+
         menu.getItems().addAll(invertColors);
+        menu.getItems().add(rules);
+        menu.getItems().addAll(odds);
+        menu.getItems().addAll(back);
         root.setAlignment(Pos.BASELINE_CENTER);
         menuBar.getMenus().addAll(menu);
     }

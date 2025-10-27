@@ -31,7 +31,7 @@ public class JavaFXTemplate extends Application {
 
         // Create all the scenes
         createMenuScene();
-        createRulesScene(prevScene); // Comment these out for now
+        createRulesScene(prevScene);
         createOddsScene();
         createGameScene();
 
