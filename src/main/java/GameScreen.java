@@ -89,21 +89,29 @@ public class GameScreen {
 
         Menu menu = new Menu("Menu");
 
-        MenuItem invertColors = new MenuItem("Invert Colors");
-        MenuItem back = new MenuItem("Back");
+        MenuItem exit = new MenuItem("Exit");
         MenuItem rules = new MenuItem("Rules");
         MenuItem odds = new  MenuItem("Odds");
+        MenuItem invertColors = new MenuItem("Invert Colors");
+
 
         invertColors.setOnAction(e -> {
             invertColors();
         });
 
+        exit.setOnAction(e -> {
+           app.changeScene(4);
+        });
 
+        rules.setOnAction(e -> {
+            app.changeScene(1);
+        });
+        odds.setOnAction(e -> {
+            app.changeScene(2);
+        });
 
-        menu.getItems().addAll(invertColors);
-        menu.getItems().add(rules);
-        menu.getItems().addAll(odds);
-        menu.getItems().addAll(back);
+        menu.getItems().addAll(exit, rules, odds, invertColors);
+
         root.setAlignment(Pos.BASELINE_CENTER);
         menuBar.getMenus().addAll(menu);
     }

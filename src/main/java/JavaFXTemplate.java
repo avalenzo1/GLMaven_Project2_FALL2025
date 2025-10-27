@@ -156,7 +156,7 @@ public class JavaFXTemplate extends Application {
     private Button createBackButon(Scene scene) {
         Button playButton = createImageButton("pictures/backButton.png", 50, 50);
         playButton.setOnAction(event -> {
-            primaryStage.setScene(scene);
+            primaryStage.setScene(prevScene);
             System.out.println("Back button Clicked");
         });
 
@@ -290,6 +290,31 @@ public class JavaFXTemplate extends Application {
     public void startGame() {
         createGameScene();
         primaryStage.setScene(gameScene);
+    }
+
+
+    public void changeScene(Integer input) {
+        if (input == 0) {
+            primaryStage.setScene(menuScene);
+        }
+
+        if (input == 1) {
+            primaryStage.setScene(rulesScene);
+        }
+
+        if (input == 2) {
+            primaryStage.setScene(oddsScene);
+        }
+
+        if (input == 3) {
+            primaryStage.setScene(gameScene);
+        }
+
+        if (input == 4) {
+            primaryStage.close();
+        }
+
+        prevScene = gameScene;
     }
 
     public void close() {
