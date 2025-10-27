@@ -224,11 +224,39 @@ public class JavaFXTemplate extends Application {
 
         Text oddsText = new Text();
 
-        oddsText.setText("Game Odds:\n" +
-                "10 spot -> 1 in 9.05\n" +
-                "8 spot -> 1 in 9.77\n" +
-                "4 spot -> 1 in 3.86\n" +
-                "1 spot -> 1 in 4.00");
+//        {0, 2}, // 1 spot
+//        {0, 0, 1, 5, 75}, // 4 spot
+//        {0, 0, 0, 0, 2, 12, 50, 750, 10000}, // 8 spot
+//        {5, 0, 0, 0, 0, 2, 15, 40, 450, 4250, 100000} // 10 spot
+
+        oddsText.setText(
+                "Game Odds:\n" +
+
+                        "\n10 Spot (overall 1 in 9.05)\n" +
+                        "• 10 match => $100,000\n" +
+                        "• 9 match => $4,250\n" +
+                        "• 8 match => $450\n" +
+                        "• 7 match => $40\n" +
+                        "• 6 match => $15\n" +
+                        "• 5 match => $2\n" +
+                        "• 0 match => $5\n" +
+
+                        "\n8 Spot (overall 1 in 9.77)\n" +
+                        "• 8 match => $10,000\n" +
+                        "• 7 match => $750\n" +
+                        "• 6 match => $50\n" +
+                        "• 5 match => $12\n" +
+                        "• 4 match => $2\n" +
+
+                        "\n4 Spot (overall 1 in 3.86)\n" +
+                        "• 4 match => $75\n" +
+                        "• 3 match => $5\n" +
+                        "• 2 match => $1\n" +
+
+                        "\n1 Spot (overall 1 in 4.00)\n" +
+                        "• 1 match => $2\n"
+        );
+
         oddsText.setStyle("-fx-font-size: 14px; -fx-line-spacing: 8px; -fx-fill: #2F4F4F;");
         oddsText.setWrappingWidth(500);
 
