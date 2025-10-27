@@ -1,3 +1,8 @@
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,9 +12,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class GameScreen {
@@ -21,16 +28,29 @@ public class GameScreen {
     VBox spotsSelectionLayout;
     VBox drawingsSelectionLayout;
     VBox gameLayout;
+    VBox gameOverLayout;
     NumberButton[][] numberButtons;
     Button submitButton;
+    VBox buttonContainer;
     Set<Integer> selectedNumbers;
 
     static boolean isInverted = false;
 
     int numDrawings;
     int numSpots;
-    int currentDrawing;
+
+    int totalWinAmount = 0;
+    int winAmount = 0;
+
+    int[][] points = {
+            {0, 2}, // 1 spot
+            {0, 0, 1, 5, 75}, // 4 spot
+            {0, 0, 0, 0, 2, 12, 50, 750, 10000}, // 8 spot
+            {5, 0, 0, 0, 0, 2, 15, 40, 450, 4250, 100000} // 10 spot
+    };
+
     GameLogic gameLogic;
+
 
     GameScreen() {
         root = new VBox();
@@ -44,6 +64,7 @@ public class GameScreen {
         setupDrawingsSelectionLayout();
         setupSpotsSelectionLayout();
         setupGameLayout();
+        setupGameOverLayout();
 
         setLayout(drawingsSelectionLayout);
     }
@@ -84,6 +105,8 @@ public class GameScreen {
         betCard.setAlignment(Pos.CENTER);
         betCard.setHgap(5);
         betCard.setVgap(5);
+        buttonContainer = new VBox();
+        buttonContainer.setSpacing(10);
 
         Button autoPickButton = new Button("Auto Pick");
         submitButton = new Button("Submit");
@@ -116,7 +139,9 @@ public class GameScreen {
             autoPickNumbers();
         });
 
-        controlPanel.getChildren().addAll(betCard, autoPickButton, submitButton);
+        buttonContainer.getChildren().addAll(autoPickButton, submitButton);
+
+        controlPanel.getChildren().addAll(betCard, buttonContainer);
     }
 
     void clearAllNumbers() {
@@ -232,24 +257,52 @@ public class GameScreen {
 
     void performDrawing() {
         Set<Integer> drawing = gameLogic.performDrawing();
-
         int matches = gameLogic.calculateMatches(drawing);
 
-        for (Integer number : drawing) {
-            Pair<Integer, Integer> cell = getPosition(number);
-            NumberButton numberButton = numberButtons[cell.getKey()][cell.getValue()];
+        int pointsIndex = -1;
 
-            numberButton.setHighlighted(true);
+        if (numSpots == 1) {
+            pointsIndex = 0;
+        } else if (numSpots == 4) {
+            pointsIndex = 1;
+        } else if (numSpots == 8) {
+            pointsIndex = 2;
+        } else if (numSpots == 10) {
+            pointsIndex = 3;
         }
 
-        showDrawingResults(drawing, matches, 0.0);
+        winAmount = points[pointsIndex][matches];
+
+        buttonContainer.setDisable(true);
+
+        Iterator<Integer> iterator = drawing.iterator();
+
+        KeyFrame highlightCell = new KeyFrame(Duration.seconds(0.1), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (iterator.hasNext()) {
+                    Integer number = iterator.next();
+                    Pair<Integer, Integer> cell = getPosition(number);
+
+                    NumberButton numberButton = numberButtons[cell.getKey()][cell.getValue()];
+                    numberButton.setHighlighted(true);
+                } else {
+                    Platform.runLater(() -> showDrawingResults(drawing, matches, winAmount));
+                }
+            }
+        });
+
+        Timeline timeline = new Timeline(highlightCell);
+
+        timeline.setCycleCount(drawing.size() + 1);
+        timeline.play();
     }
 
     void showDrawingResults(Set<Integer> drawnNumbers, int matches, double winAmount) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Results");
         alert.setHeaderText("Results for drawing #" + gameLogic.currentDrawing);
-        alert.setContentText("The winning numbers are: " + drawnNumbers.toString() + "\n" + "You succesfully matched " + matches + " numbers.\n" + "You won " + winAmount + " points.");
+        alert.setContentText("The winning numbers are: " + drawnNumbers.toString() + "\n" + "You succesfully matched " + matches + " numbers.\n" + "You won $" + winAmount + " this round and $" + (winAmount + totalWinAmount) + " total.");
 
         alert.setX(100);
         alert.setY(100);
@@ -260,21 +313,41 @@ public class GameScreen {
 
     void resetGame() {
         gameLogic.resetGameState();
+        buttonContainer.setDisable(false);
+        totalWinAmount += winAmount;
+        winAmount = 0;
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 8; col++) {
                 NumberButton numberButton = numberButtons[col][row];
-                numberButton.setSelected(false);
+                numberButton.reset();
             }
         }
 
         if (gameLogic.isGameComplete()) {
             root.getChildren().clear();
             root.setAlignment(Pos.CENTER);
-            root.getChildren().add(new Text("Thank you for playing!"));
+            root.getChildren().add(gameOverLayout);
         }
 
         submitButton.setDisable(true);
+    }
+
+    void setupGameOverLayout() {
+
+        Text thankYouText = new Text("Thank you for playing!");
+        Button startOverButton = new Button("New Game");
+        Button quitGameButton = new Button("Quit");
+
+        HBox buttonContainer = new HBox();
+        buttonContainer.getChildren().addAll(startOverButton, quitGameButton);
+        buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.setSpacing(20);
+        buttonContainer.setPadding(new Insets(20));
+
+        gameOverLayout = new VBox();
+        gameOverLayout.getChildren().addAll(thankYouText, buttonContainer);
+        gameOverLayout.setAlignment(Pos.CENTER);
     }
 
     void invertColors() {
